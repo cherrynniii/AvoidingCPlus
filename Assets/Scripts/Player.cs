@@ -13,4 +13,24 @@ public class Player : MonoBehaviour
         float toX = Mathf.Clamp(mousePos.x, -2.35f, 2.35f);
         transform.position = new Vector3(toX, transform.position.y, transform.position.z);
     }
+
+    // 점수와의 충돌 처리
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.tag == "A+") {
+            Debug.Log("A+ Collision");
+        }
+        else if (other.gameObject.tag == "A0") {
+            Debug.Log("A0 Collision");
+        }
+        else if (other.gameObject.tag == "B+") {
+            Debug.Log("B+ Collision");
+
+        }
+        else if (other.gameObject.tag == "B0") {
+            Debug.Log("B0 Collision");
+        }
+        else if (other.gameObject.tag == "C+") {
+            Debug.Log("C+ Collision");
+        }
+    }
 }
