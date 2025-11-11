@@ -17,6 +17,7 @@ public class Score : MonoBehaviour
         }
     }
 
+    // 플레이어와 충돌 시 점수 객체는 화면에서 사라짐
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.tag == "Player") {
             Destroy(gameObject);

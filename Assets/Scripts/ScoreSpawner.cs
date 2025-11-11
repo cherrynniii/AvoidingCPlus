@@ -23,14 +23,15 @@ public class ScoreSpawner : MonoBehaviour
         StartCoroutine("ScoreRoutine");
     }
 
+    // 점수 무한 생성 로직
     IEnumerator ScoreRoutine() {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.5f);  // 시작 1.5초 뒤부터 생성
 
         while (true) {
             float posX = arrPosX[Random.Range(0, arrPosX.Length)];
             int index = Random.Range(0, scores.Length);     // score 객체 랜덤 뽑기
             SpawnScore(posX, index);
-            yield return new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(spawnInterval); // 생성 주기에 따라 새로운 객체 생성
         }
     }
 
