@@ -17,20 +17,24 @@ public class Player : MonoBehaviour
     // 점수와의 충돌 처리
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.tag == "A+") {
-            Debug.Log("A+ Collision");
+            GameManager.instance.IncreaseFinalScore(3);
+            Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "A0") {
-            Debug.Log("A0 Collision");
+            GameManager.instance.IncreaseFinalScore(1);
+            Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "B+") {
-            Debug.Log("B+ Collision");
+            Debug.Log(GameManager.instance.GetFinalScore());
 
         }
         else if (other.gameObject.tag == "B0") {
-            Debug.Log("B0 Collision");
+            GameManager.instance.IncreaseFinalScore(-1);
+            Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "C+") {
-            Debug.Log("C+ Collision");
+            GameManager.instance.IncreaseFinalScore(-3);
+            Debug.Log(GameManager.instance.GetFinalScore());
         }
     }
 }

@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    public static GameManager instance = null;
+    private int finalScore = 0;
+
+    void Awake() {
+        if (instance == null) {
+            instance = this;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void IncreaseFinalScore(int value) {
+        finalScore += value;
+    }
+
+    public int GetFinalScore() {
+        return finalScore;
     }
 }
