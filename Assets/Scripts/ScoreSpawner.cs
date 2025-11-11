@@ -24,7 +24,7 @@ public class ScoreSpawner : MonoBehaviour
     }
 
     IEnumerator ScoreRoutine() {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
 
         while (true) {
             float posX = arrPosX[Random.Range(0, arrPosX.Length)];
