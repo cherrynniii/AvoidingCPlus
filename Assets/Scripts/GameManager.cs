@@ -8,20 +8,34 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;  // GameManager 총괄 instance(싱글톤 패턴)
     private int finalScore = 0;     // 누적 점수
 
+
     // TODO: isGameOver (boolean)
 
-    [SerializeField]
-    private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
+    [SerializeField] private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
+    [SerializeField] private TextMeshProUGUI playerNameText; //화면에 보이는 이름
 
-    // TODO: gameStartPanel (SerializeField): 게임 시작 패널
+    // TODO: gameStartPanel (SerializeField): 게임 시작 패널    => 따로 씬 만들어서 구현
 
     // TODO: gameOverPanel (SerializeField): 게임 종료 패널 (최종 점수 보여주기, Restart 버튼)
 
     // 게임 실행 시 맨 처음 실행 (GameManager 인스턴스 초기화)
-    void Awake() {
-        if (instance == null) {
+    void Awake()
+    {
+        if (instance == null)
+        {
             instance = this;
         }
+    }
+    
+    void Start()
+    {
+        //TitleScene에서 저장된 이름 불러오기
+        string playerName = PlayerPrefs.GetString("PlayerName", "Unknown");
+
+        if (playerNameText != null)
+            playerNameText.SetText(playerName);
+
+
     }
 
     // 누적 점수 (finalScore) 값을 value 만큼 증가 시키기
