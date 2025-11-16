@@ -7,6 +7,9 @@ public class SettingManager : MonoBehaviour
     [SerializeField] private LevelSlider speedSlider;
     [SerializeField] private LevelSlider quantitySlider;
     [SerializeField] private Button startButton;
+    
+    [SerializeField] private SizeSlider playerSizeSlider;
+    [SerializeField] private SizeSlider objectSizeSlider;
 
     void Start()
     {
@@ -17,10 +20,14 @@ public class SettingManager : MonoBehaviour
     {
         int speed = speedSlider.GetLevel();
         int spawnInterval = quantitySlider.GetLevel();
-
         float speedValue = ConvertSpeedLevel(speed);
         float spawnIntervalValue = ConvertSpawnIntervalLevel(spawnInterval);
 
+        int objectSize = objectSizeSlider.GetLevel();
+        int playerSize = playerSizeSlider.GetLevel();
+        
+        PlayerPrefs.SetInt("PlayerSize", playerSize);
+        PlayerPrefs.SetInt("ObjectSize", objectSize);
         PlayerPrefs.SetFloat("SpeedLevel", speedValue);
         PlayerPrefs.SetFloat("SpawnIntervalLevel", spawnIntervalValue);
 
