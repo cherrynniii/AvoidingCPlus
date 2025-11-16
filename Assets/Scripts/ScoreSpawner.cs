@@ -34,11 +34,17 @@ public class ScoreSpawner : MonoBehaviour
     // 점수 무한 생성 로직
     IEnumerator ScoreRoutine() {
         yield return new WaitForSeconds(1.5f);  // 시작 1.5초 뒤부터 생성
+        bool firstSpawn = true; // 첫 생성인지
 
         while (true) {
             float posX = arrPosX[Random.Range(0, arrPosX.Length)];
             int index = Random.Range(0, scores.Length);     // score 객체 랜덤 뽑기
             SpawnScore(posX, index);
+
+            if (firstSpawn) {
+                GameManager.instance.NotifyFirstSpawn();
+                firstSpawn = false;
+            }
             yield return new WaitForSeconds(spawnInterval); // 생성 주기에 따라 새로운 객체 생성
         }
     }
@@ -49,5 +55,9 @@ public class ScoreSpawner : MonoBehaviour
         GameObject obj = Instantiate(scores[index], spawnPos, Quaternion.identity);
         
         obj.transform.localScale = new Vector3(objectScale, objectScale, 1f);
+    }
+
+    public void StopScoreRoutine() {
+        StopCoroutine("ScoreRoutine");
     }
 }
