@@ -8,13 +8,11 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;  // GameManager 총괄 instance(싱글톤 패턴)
     private int finalScore = 0;     // 누적 점수
 
-
-    // TODO: isGameOver (boolean)
-
     [SerializeField] private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
     [SerializeField] private TextMeshProUGUI playerNameText; //화면에 보이는 이름
 
-    // TODO: gameStartPanel (SerializeField): 게임 시작 패널    => 따로 씬 만들어서 구현
+    private bool gameStarted = false;
+    private float gameStartTime = 0f;   // 첫 score 생성 후 시간이 얼마나 지났는지
 
     // TODO: gameOverPanel (SerializeField): 게임 종료 패널 (최종 점수 보여주기, Restart 버튼)
 
@@ -48,10 +46,36 @@ public class GameManager : MonoBehaviour
     public int GetFinalScore() {
         return finalScore;
     }
+    
+    public void SetGameOver() {
+        Debug.Log("GAME OVER (40초 지남)");
+        ScoreSpawner scoreSpawner = FindObjectOfType<ScoreSpawner>();
+        if (scoreSpawner != null) {
+            scoreSpawner.StopScoreRoutine();
+        }
+        Player player = FindObjectOfType<Player>();
+        if (player != null) {
+            player.DisableMovement();
+        }
+    }
 
-    // TODO: SetGameStart() 메서드: 게임 시작 패널 띄우기, 사용자 ID 입력(SetPlayerID), SetCondition 호출
+    public void NotifyFirstSpawn() {
+        if (!gameStarted) {
+            gameStartTime = Time.time;
+            gameStarted = true;
+        }
+    }
 
-    // TODO: SetGameOver() 메서드: 게임 종료 처리, 게임 오버 패널 띄우기(SetGameOverPanel), 게임 결과 저장(saveResult)
+    void Update() {
+        if (gameStarted) {
+            // 40초가 지난 경우 게임 종료
+            if (Time.time - gameStartTime >= 40f) {
+                SetGameOver();
+                gameStarted = false;
+            }
+        }
+    }
+    
 
     // TODO: SetCondition(int condition) 메서드: SetGameStart()에서 호출됨 -> condition 번호에 따라 낙하 속도 및 생성 주기 설정 
     // (Score 클래스의 SetMoveSpeed와 ScoreSpawner 클래스의 SetSpawnInterval 호출)
