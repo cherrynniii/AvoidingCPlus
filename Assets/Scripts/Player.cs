@@ -18,10 +18,12 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.tag == "A+") {
             GameManager.instance.IncreaseFinalScore(3);
+            GameManager.instance.IncreaseGoodCollectedCount();
             Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "A0") {
             GameManager.instance.IncreaseFinalScore(1);
+            GameManager.instance.IncreaseGoodCollectedCount();
             Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "B+") {
@@ -30,10 +32,12 @@ public class Player : MonoBehaviour
         }
         else if (other.gameObject.tag == "B0") {
             GameManager.instance.IncreaseFinalScore(-1);
+            GameManager.instance.IncreaseBadCollectedCount();
             Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "C+") {
             GameManager.instance.IncreaseFinalScore(-3);
+            GameManager.instance.IncreaseBadCollectedCount();
             Debug.Log(GameManager.instance.GetFinalScore());
         }
     }

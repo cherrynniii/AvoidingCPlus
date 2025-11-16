@@ -19,15 +19,42 @@ public class SettingManager : MonoBehaviour
     public void OnStartClicked()
     {
         int speed = speedSlider.GetLevel();
-        int quantity = quantitySlider.GetLevel();
+        int spawnInterval = quantitySlider.GetLevel();
+        float speedValue = ConvertSpeedLevel(speed);
+        float spawnIntervalValue = ConvertSpawnIntervalLevel(spawnInterval);
+
         int objectSize = objectSizeSlider.GetLevel();
         int playerSize = playerSizeSlider.GetLevel();
-
-        PlayerPrefs.SetInt("SpeedLevel", speed);
-        PlayerPrefs.SetInt("QuantityLevel", quantity);
+        
         PlayerPrefs.SetInt("PlayerSize", playerSize);
         PlayerPrefs.SetInt("ObjectSize", objectSize);
+        PlayerPrefs.SetFloat("SpeedLevel", speedValue);
+        PlayerPrefs.SetFloat("SpawnIntervalLevel", spawnIntervalValue);
 
         SceneManager.LoadScene("SampleScene");
+    }
+
+    // 스피드 설정
+    private float ConvertSpeedLevel(int level)
+    {
+        switch (level)
+        {
+            case 0: return 5f;
+            case 1: return 7f;
+            case 2: return 9f;
+            default: return 5f;   // 기본값
+        }
+    }
+
+    // 생성 주기 설정
+    private float ConvertSpawnIntervalLevel(int level)
+    {
+        switch (level)
+        {
+            case 0: return 0.8f;
+            case 1: return 0.65f;
+            case 2: return 0.5f;
+            default: return 0.8f;
+        }
     }
 }

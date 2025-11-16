@@ -20,8 +20,13 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject gameOverPanel;
 
-
-    // TODO: gameOverPanel (SerializeField): 게임 종료 패널 (최종 점수 보여주기, Restart 버튼)
+    private int goodSpawnCount = 0;     // A+, A0 생성 횟수
+    private int badSpawnCount = 0;      // B0, C+ 생성 횟수
+    private int goodCollectedCount = 0; // A+, A0 받은 횟수
+    private int badCollectedCount = 0;  // B0, C+ 받은 횟수
+    private string participantID = "";
+    private float speed = 0f;
+    private float spawnInterval = 0f;
 
     // 게임 실행 시 맨 처음 실행 (GameManager 인스턴스 초기화)
     void Awake()
@@ -41,7 +46,6 @@ public class GameManager : MonoBehaviour
             playerNameText.SetText(playerName);
 
         ApplyPlayerSize();
-
     }
 
     private void ApplyPlayerSize()
@@ -64,6 +68,7 @@ public class GameManager : MonoBehaviour
         return finalScore;
     }
     
+    // 게임 종료 처리
     public void SetGameOver() {
         Debug.Log("GAME OVER (40초 지남)");
         ScoreSpawner scoreSpawner = FindObjectOfType<ScoreSpawner>();
@@ -74,13 +79,16 @@ public class GameManager : MonoBehaviour
         if (player != null) {
             player.DisableMovement();
         }
+        SaveResult();
         Invoke("ShowGameOverPanel", 1f);
     }
 
+    // 게임 종료 패널 띄우기
     void ShowGameOverPanel() {
         gameOverPanel.SetActive(true);
     }
 
+    // 게임 시작 초 세기 시작 (첫 score 생성 기준)
     public void NotifyFirstSpawn() {
         if (!gameStarted) {
             gameStartTime = Time.time;
@@ -98,26 +106,63 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 재시작 처리
     public void PlayAgain() {
         SceneManager.LoadScene("TitleScene");
     }
+
+    // participantID 설정
+    public void SetParticipantID(string id) {
+        participantID = id;
+    }
+
+    // goodSpawnCount 증가
+    public void IncreaseGoodSpawnCount() {
+        goodSpawnCount += 1;
+    }
+
+    // goodCollectedCount 증가
+    public void IncreaseGoodCollectedCount() {
+        goodCollectedCount += 1;
+    }
+
+    // badSpawnCount 증가
+    public void IncreaseBadSpawnCount() {
+        badSpawnCount += 1;
+    }
+
+    // badCollectedCount 증가
+    public void IncreaseBadCollectedCount() {
+        badCollectedCount += 1;
+    }
     
+    // 게임 결과 엑셀 파일에 저장하기
+    private void SaveResult() {
+        spawnInterval = PlayerPrefs.GetFloat("SpawnIntervalLevel");
+        speed = PlayerPrefs.GetFloat("SpeedLevel");
+        participantID = PlayerPrefs.GetString("StudentID");
 
-    // TODO: SetCondition(int condition) 메서드: SetGameStart()에서 호출됨 -> condition 번호에 따라 낙하 속도 및 생성 주기 설정 
-    // (Score 클래스의 SetMoveSpeed와 ScoreSpawner 클래스의 SetSpawnInterval 호출)
+        string path = Application.persistentDataPath + "/experiment_log.csv";
 
-    // TODO: SetGameStartPanel() 메서드: 게임 시작 패널 활성화
+        // 파일이 없으면 헤더 생성
+        if (!System.IO.File.Exists(path))
+        {
+            string header = "ParticipantID,Speed,SpawnInterval,FinalScore,GoodSpawnCount,GoodCollectedCount,BadSpawnCount,BadCollectedCount\n";
+            System.IO.File.WriteAllText(path, header);
+        }
 
-    // TODO: SetGameOverPanel() 메서드: 게임 종료 패널 활성화
+        string line =
+            participantID + "," +
+            speed + "," +
+            spawnInterval + "," +
+            finalScore + "," +
+            goodSpawnCount + "," +
+            goodCollectedCount + "," +
+            badSpawnCount + "," +
+            badCollectedCount + "\n";
 
-    // TODO: SetPlayerID(int condition) 메서드: 피험자 ID 설정
+        System.IO.File.AppendAllText(path, line);
 
-    // TODO: SaveResult() 메서드: 피험자 ID, 게임 condition, dependent variable 4가지 결과 저장 -> 엑셀 파일
-
-    // TODO: dependent variable 2 계산 메서드 -> A+, A0 받은 비율
-
-    // TODO: dependent variable 3 계산 메서드 -> B0, C+ 받은 비율
-
-    // TODO: dependent variabl 4 계산 메서드 -> 타겟팅 에러
-
+        Debug.Log("CSV 저장 완료: " + path);
+    }
 }

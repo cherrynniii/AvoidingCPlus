@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class Score : MonoBehaviour
 {
-    [SerializeField]
     private float moveSpeed;
     private float minY = -7;    // 화면 밖을 벗어나는 기준
+
+    void Start() {
+        moveSpeed = PlayerPrefs.GetFloat("SpeedLevel");
+        if (gameObject.tag == "A+" || gameObject.tag == "A0") {
+            GameManager.instance.IncreaseGoodSpawnCount();
+        }
+        else if (gameObject.tag == "B0" || gameObject.tag == "C+") {
+            GameManager.instance.IncreaseBadSpawnCount();
+        }
+    }
 
     // Update is called once per frame
     void Update()
