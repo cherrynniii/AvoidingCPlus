@@ -252,6 +252,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalScoreText: {fileID: 1856798410}
   playerNameText: {fileID: 1121918495}
+  playerObject: {fileID: 1704671203}
+  scoreObject: {fileID: 1562960463}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

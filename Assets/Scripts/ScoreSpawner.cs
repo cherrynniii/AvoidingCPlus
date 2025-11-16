@@ -9,13 +9,21 @@ public class ScoreSpawner : MonoBehaviour
     private GameObject[] scores; // A+, A0, B+, B0, C+ 객체
     private float[] arrPosX = {-2.2f, -1.1f, 0f, 1.1f, 2.2f};   // 객체 생성 x 위치
 
-    [SerializeField]
-    private float spawnInterval;  // 객체 생성 주기
+    [SerializeField] private float spawnInterval;  // 객체 생성 주기
+
+    private float objectScale;
 
     // Start is called before the first frame update
     void Start()
     {
+        LoadObjectScale();
         StartScoreRoutine();
+    }
+
+    void LoadObjectScale()
+    {
+        int objectSizeLevel = PlayerPrefs.GetInt("ObjectSize", 1);
+        objectScale = 0.5f + (objectSizeLevel - 1) * 0.125f;       // 0.5 ~ 1.0
     }
 
     // coroutine
@@ -38,6 +46,8 @@ public class ScoreSpawner : MonoBehaviour
     // 스폰 x 위치, 어떤 score 객체 만들지 인덱스
     void SpawnScore(float posX, int index) {
         Vector3 spawnPos = new Vector3(posX, transform.position.y, transform.position.z);
-        Instantiate(scores[index], spawnPos, Quaternion.identity);
+        GameObject obj = Instantiate(scores[index], spawnPos, Quaternion.identity);
+        
+        obj.transform.localScale = new Vector3(objectScale, objectScale, 1f);
     }
 }

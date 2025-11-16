@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
     [SerializeField] private TextMeshProUGUI playerNameText; //화면에 보이는 이름
+    [SerializeField] private GameObject playerObject; //플레이어 오브젝트
+    
 
     // TODO: gameStartPanel (SerializeField): 게임 시작 패널    => 따로 씬 만들어서 구현
 
@@ -26,7 +28,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
     }
-    
+
     void Start()
     {
         //TitleScene에서 저장된 이름 불러오기
@@ -35,7 +37,17 @@ public class GameManager : MonoBehaviour
         if (playerNameText != null)
             playerNameText.SetText(playerName);
 
+        ApplyPlayerSize();
 
+    }
+
+    private void ApplyPlayerSize()
+    {
+        int level = PlayerPrefs.GetInt("PlayerSize", 1);
+        float scale = 0.5f + (level - 1) * 0.125f;
+
+        if (playerObject != null)
+            playerObject.transform.localScale = new Vector3(scale, scale, 1f);
     }
 
     // 누적 점수 (finalScore) 값을 value 만큼 증가 시키기
