@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class GameManager : MonoBehaviour
 
     private bool gameStarted = false;
     private float gameStartTime = 0f;   // 첫 score 생성 후 시간이 얼마나 지났는지
+
+    [SerializeField]
+    private GameObject gameOverPanel;
+
 
     // TODO: gameOverPanel (SerializeField): 게임 종료 패널 (최종 점수 보여주기, Restart 버튼)
 
@@ -57,6 +62,11 @@ public class GameManager : MonoBehaviour
         if (player != null) {
             player.DisableMovement();
         }
+        Invoke("ShowGameOverPanel", 1f);
+    }
+
+    void ShowGameOverPanel() {
+        gameOverPanel.SetActive(true);
     }
 
     public void NotifyFirstSpawn() {
@@ -74,6 +84,10 @@ public class GameManager : MonoBehaviour
                 gameStarted = false;
             }
         }
+    }
+
+    public void PlayAgain() {
+        SceneManager.LoadScene("TitleScene");
     }
     
 
