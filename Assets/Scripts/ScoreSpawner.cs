@@ -9,12 +9,12 @@ public class ScoreSpawner : MonoBehaviour
     private GameObject[] scores; // A+, A0, B+, B0, C+ 객체
     private float[] arrPosX = {-2.2f, -1.1f, 0f, 1.1f, 2.2f};   // 객체 생성 x 위치
 
-    [SerializeField]
     private float spawnInterval;  // 객체 생성 주기
 
     // Start is called before the first frame update
     void Start()
     {
+        spawnInterval = PlayerPrefs.GetFloat("SpawnIntervalLevel");
         StartScoreRoutine();
     }
 
