@@ -9,6 +9,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private TMP_InputField studentID;
     [SerializeField] private Button settingButton;
+    [SerializeField] private Button practiceButton;
 
     void Start()
     {
