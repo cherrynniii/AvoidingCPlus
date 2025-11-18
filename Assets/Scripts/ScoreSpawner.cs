@@ -9,13 +9,25 @@ public class ScoreSpawner : MonoBehaviour
     private GameObject[] scores; // A+, A0, B+, B0, C+ 객체
     private float[] arrPosX = {-2.2f, -1.1f, 0f, 1.1f, 2.2f};   // 객체 생성 x 위치
     private int[] weights = {15, 15, 10, 10, 50};    // score 생성 확률 테이블
+    
+    private bool isPractice;
+     private float[] practiceIntervals = { 0.8f, 0.65f, 0.5f };
+     private int practiceIndex = 0;
 
     private float spawnInterval;  // 객체 생성 주기
 
     // Start is called before the first frame update
     void Start()
     {
-        spawnInterval = PlayerPrefs.GetFloat("SpawnIntervalLevel");
+        isPractice = GameManager.instance.GetIsPractice();
+        if (!isPractice) {
+            spawnInterval = PlayerPrefs.GetFloat("SpawnIntervalLevel");
+        }
+        else {
+            spawnInterval = practiceIntervals[0];   // 초기값 0.8f
+            StartCoroutine(PracticeIntervalRoutine());
+        }
+        
         StartScoreRoutine();
     }
 
@@ -68,5 +80,19 @@ public class ScoreSpawner : MonoBehaviour
         }
 
         return weights.Length - 1;  // 실제로는 실행되지 않음
+    }
+
+    // 연습모드: 7초마다 spawnInterval 순환
+    IEnumerator PracticeIntervalRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(7f);
+
+            practiceIndex = (practiceIndex + 1) % practiceIntervals.Length;
+            spawnInterval = practiceIntervals[practiceIndex];
+
+            Debug.Log("현재 스폰 속도: " + spawnInterval);
+        }
     }
 }
