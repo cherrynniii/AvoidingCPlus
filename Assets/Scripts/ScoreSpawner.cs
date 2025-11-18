@@ -8,6 +8,7 @@ public class ScoreSpawner : MonoBehaviour
     [SerializeField]
     private GameObject[] scores; // A+, A0, B+, B0, C+ 객체
     private float[] arrPosX = {-2.2f, -1.1f, 0f, 1.1f, 2.2f};   // 객체 생성 x 위치
+    private int[] weights = {15, 15, 10, 10, 50};    // score 생성 확률 테이블
 
     private float spawnInterval;  // 객체 생성 주기
 
@@ -30,7 +31,7 @@ public class ScoreSpawner : MonoBehaviour
 
         while (true) {
             float posX = arrPosX[Random.Range(0, arrPosX.Length)];
-            int index = Random.Range(0, scores.Length);     // score 객체 랜덤 뽑기
+            int index = GetWeightedRandomIndex();     // score 객체 랜덤 뽑기
             SpawnScore(posX, index);
 
             if (firstSpawn) {
@@ -49,5 +50,23 @@ public class ScoreSpawner : MonoBehaviour
 
     public void StopScoreRoutine() {
         StopCoroutine("ScoreRoutine");
+    }
+
+    // 확률 기반 랜덤 인덱스 함수
+    int GetWeightedRandomIndex() {
+        int total = 0;
+        foreach (int w in weights)
+            total += w; // 100
+        
+        int rand = Random.Range(0, total);  // 0~99 사이 하나 선택
+
+        int cumulative = 0; // 누적 확률에 따라 어떤 인덱스인지 판단
+        for (int i = 0; i < weights.Length; i++) {
+            cumulative += weights[i];
+            if (rand < cumulative)
+                return i;
+        }
+
+        return weights.Length - 1;  // 실제로는 실행되지 않음
     }
 }
