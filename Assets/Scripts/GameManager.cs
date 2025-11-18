@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;  // GameManager 총괄 instance(싱글톤 패턴)
     private int finalScore = 0;     // 누적 점수
+    private bool isPractice = false;
 
     [SerializeField] private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
     [SerializeField] private TextMeshProUGUI playerNameText; //화면에 보이는 이름
@@ -39,9 +40,20 @@ public class GameManager : MonoBehaviour
     {
         //TitleScene에서 저장된 이름 불러오기
         string playerName = PlayerPrefs.GetString("PlayerName", "Unknown");
+        if (PlayerPrefs.GetInt("GameMode") == 0) {
+            isPractice = false;
+        }
+        else if (PlayerPrefs.GetInt("GameMode") == 1) {
+            isPractice = true;
+        }
 
         if (playerNameText != null)
             playerNameText.SetText(playerName);
+    }
+
+    // 연습 모드인지 불린 값 반환
+    public bool GetIsPractice() {
+        return isPractice;
     }
 
     // 누적 점수 (finalScore) 값을 value 만큼 증가 시키기
@@ -57,7 +69,7 @@ public class GameManager : MonoBehaviour
     
     // 게임 종료 처리
     public void SetGameOver() {
-        Debug.Log("GAME OVER (40초 지남)");
+        Debug.Log("GAME OVER");
         ScoreSpawner scoreSpawner = FindObjectOfType<ScoreSpawner>();
         if (scoreSpawner != null) {
             scoreSpawner.StopScoreRoutine();
@@ -66,7 +78,9 @@ public class GameManager : MonoBehaviour
         if (player != null) {
             player.DisableMovement();
         }
-        SaveResult();
+        if (!isPractice) {
+            SaveResult();
+        }
         Invoke("ShowGameOverPanel", 1f);
     }
 
@@ -84,11 +98,22 @@ public class GameManager : MonoBehaviour
     }
 
     void Update() {
-        if (gameStarted) {
-            // 40초가 지난 경우 게임 종료
-            if (Time.time - gameStartTime >= 40f) {
-                SetGameOver();
-                gameStarted = false;
+        if (!isPractice) {
+            if (gameStarted) {
+                // 40초가 지난 경우 게임 종료
+                if (Time.time - gameStartTime >= 40f) {
+                    SetGameOver();
+                    gameStarted = false;
+                }
+            }
+        }
+        else {
+            if (gameStarted) {
+                // 60초가 지난 경우 게임 종료
+                if (Time.time - gameStartTime >= 60f) {
+                    SetGameOver();
+                    gameStarted = false;
+                }
             }
         }
     }
@@ -151,5 +176,10 @@ public class GameManager : MonoBehaviour
         System.IO.File.AppendAllText(path, line);
 
         Debug.Log("CSV 저장 완료: " + path);
+    }
+
+    // 게임 시작 시간 가져오기
+    public float GetGameStartTime() {
+        return gameStartTime;
     }
 }

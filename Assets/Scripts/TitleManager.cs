@@ -14,8 +14,10 @@ public class TitleManager : MonoBehaviour
     void Start()
     {
         settingButton.onClick.AddListener(OnSettingClicked);    // 시작 버튼 누르면 이름 저장
+        practiceButton.onClick.AddListener(OnPracticeClicked);
 
         settingButton.interactable = false;
+        practiceButton.interactable = true;     // 항상 활성화
 
         nameInput.onValueChanged.AddListener(delegate { CheckInfoInput(); });
         studentID.onValueChanged.AddListener(delegate { CheckInfoInput(); });
@@ -45,7 +47,13 @@ public class TitleManager : MonoBehaviour
 
         PlayerPrefs.SetString("PlayerName", playerName); // 이름 저장
         PlayerPrefs.SetString("StudentID", id);
+        PlayerPrefs.SetInt("GameMode", 0);  // 0 = 실전
 
         SceneManager.LoadScene("SettingScene"); // 실제 게임 씬 이름
+    }
+
+    void OnPracticeClicked() {
+        PlayerPrefs.SetInt("GameMode", 1);  // 1 = 연습
+        SceneManager.LoadScene("SampleScene"); 
     }
 }
