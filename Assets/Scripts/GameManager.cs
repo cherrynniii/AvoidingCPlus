@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     private bool isPractice = false;
 
     [SerializeField] private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
-    [SerializeField] private TextMeshProUGUI playerNameText; //화면에 보이는 이름
+    [SerializeField] private TextMeshProUGUI playerIdText; //화면에 보이는 아이디
 
     private bool gameStarted = false;
     private float gameStartTime = 0f;   // 첫 score 생성 후 시간이 얼마나 지났는지
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         //TitleScene에서 저장된 이름 불러오기
-        string playerName = PlayerPrefs.GetString("PlayerName", "Unknown");
+        string playerId = PlayerPrefs.GetString("StudentID", "Unknown");
         if (PlayerPrefs.GetInt("GameMode") == 0) {
             isPractice = false;
         }
@@ -47,8 +47,8 @@ public class GameManager : MonoBehaviour
             isPractice = true;
         }
 
-        if (playerNameText != null)
-            playerNameText.SetText(playerName);
+        if (playerIdText != null)
+            playerIdText.SetText(playerId);
     }
 
     // 연습 모드인지 불린 값 반환

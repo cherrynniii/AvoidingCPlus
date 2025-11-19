@@ -31,6 +31,8 @@ public class ScoreSpawner : MonoBehaviour
         StartScoreRoutine();
     }
 
+    // 오브젝트 사이즈 0.875로 수정 later
+
     // coroutine
     void StartScoreRoutine() {
         StartCoroutine("ScoreRoutine");
