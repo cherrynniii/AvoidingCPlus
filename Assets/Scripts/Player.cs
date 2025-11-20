@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,26 @@ public class Player : MonoBehaviour
 
     // 점수와의 충돌 처리
     private void OnTriggerEnter2D(Collider2D other) {
+        float playerX = transform.position.x;
+        float scoreX = other.transform.position.x;
+
+
+        // 중심 거리
+        float centerDistance = Mathf.Abs(playerX - scoreX);
+
+        float playerHalf = GetComponent<BoxCollider2D>().bounds.extents.x;
+        float scoreHalf = other.GetComponent<BoxCollider2D>().bounds.extents.x;
+
+        // 최대 오차 (끝과 끝이 닿는 지점)
+        float maxDistance = playerHalf + scoreHalf;
+
+        // 오차율(0~1)
+        float centerErrorRate = centerDistance / maxDistance;
+        centerErrorRate = Mathf.Clamp01(centerErrorRate);
+
+
+        GameManager.instance.RegisterCenterError(centerErrorRate);
+
         if (other.gameObject.tag == "A+") {
             GameManager.instance.IncreaseFinalScore(3);
             GameManager.instance.IncreaseGoodCollectedCount();
@@ -40,6 +61,8 @@ public class Player : MonoBehaviour
             GameManager.instance.IncreaseBadCollectedCount();
             Debug.Log(GameManager.instance.GetFinalScore());
         }
+
+        GameManager.instance.TempFunction();
     }
 
     // 게임 종료 시 움직임 비활성화
