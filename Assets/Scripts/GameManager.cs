@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEditor.PackageManager;
+using UnityEngine.AI;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
     [SerializeField] private TextMeshProUGUI playerIdText; //화면에 보이는 아이디
+    [SerializeField] private TextMeshProUGUI errorRateText; //화면에 보이는 아이디
 
     private bool gameStarted = false;
     private float gameStartTime = 0f;   // 첫 score 생성 후 시간이 얼마나 지났는지
@@ -26,6 +29,9 @@ public class GameManager : MonoBehaviour
     private string participantID = "";
     private float speed = 0f;
     private float spawnInterval = 0f;
+
+    private float totalCenterError = 0.01f;    //총 중심 오차 에러
+    private int errorSamples = 1;           //에러 샘플 하나 변수
 
     // 게임 실행 시 맨 처음 실행 (GameManager 인스턴스 초기화)
     void Awake()
@@ -118,6 +124,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RegisterCenterError(float errorRate)
+    {
+        totalCenterError += errorRate;
+        errorSamples++;
+    }
+
+    public float GetAverageCenterError()
+    {
+        if (errorSamples == 0) return 0f;
+        return totalCenterError / errorSamples;
+    }
+
+public void TempFunction()
+{
+    float avg = GetAverageCenterError();
+
+    // 퍼센트 변환(+ 100) + 소수점 1자리("F1")
+    errorRateText.SetText((avg * 100f).ToString("F1") + "%");
+}
+
+
     // 재시작 처리
     public void PlayAgain() {
         SceneManager.LoadScene("TitleScene");
@@ -153,13 +180,14 @@ public class GameManager : MonoBehaviour
         spawnInterval = PlayerPrefs.GetFloat("SpawnIntervalLevel");
         speed = PlayerPrefs.GetFloat("SpeedLevel");
         participantID = PlayerPrefs.GetString("StudentID");
+        float avgError = GetAverageCenterError();
 
         string path = Application.persistentDataPath + "/experiment_log.csv";
 
         // 파일이 없으면 헤더 생성
         if (!System.IO.File.Exists(path))
         {
-            string header = "ParticipantID,Speed,SpawnInterval,FinalScore,GoodSpawnCount,GoodCollectedCount,BadSpawnCount,BadCollectedCount\n";
+            string header = "ParticipantID,Speed,SpawnInterval,FinalScore,GoodSpawnCount,GoodCollectedCount,BadSpawnCount,BadCollectedCount,AvgError\n";
             System.IO.File.WriteAllText(path, header);
         }
 
@@ -171,7 +199,8 @@ public class GameManager : MonoBehaviour
             goodSpawnCount + "," +
             goodCollectedCount + "," +
             badSpawnCount + "," +
-            badCollectedCount + "\n";
+            badCollectedCount +
+            avgError + "\n";
 
         System.IO.File.AppendAllText(path, line);
 
