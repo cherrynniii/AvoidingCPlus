@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI totalScoreText; // 화면에 보이는 점수 텍스트
     [SerializeField] private TextMeshProUGUI playerIdText; //화면에 보이는 아이디
-    [SerializeField] private TextMeshProUGUI errorRateText; //화면에 보이는 아이디
 
     private bool gameStarted = false;
     private float gameStartTime = 0f;   // 첫 score 생성 후 시간이 얼마나 지났는지
@@ -141,7 +140,6 @@ public void TempFunction()
     float avg = GetAverageCenterError();
 
     // 퍼센트 변환(+ 100) + 소수점 1자리("F1")
-    errorRateText.SetText((avg * 100f).ToString("F1") + "%");
 }
 
 
@@ -199,7 +197,7 @@ public void TempFunction()
             goodSpawnCount + "," +
             goodCollectedCount + "," +
             badSpawnCount + "," +
-            badCollectedCount +
+            badCollectedCount + "," +
             avgError + "\n";
 
         System.IO.File.AppendAllText(path, line);
