@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 
 public class TitleManager : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private TMP_InputField studentID;
     [SerializeField] private Button settingButton;
     [SerializeField] private Button practiceButton;
@@ -19,33 +18,27 @@ public class TitleManager : MonoBehaviour
         settingButton.interactable = false;
         practiceButton.interactable = true;     // 항상 활성화
 
-        nameInput.onValueChanged.AddListener(delegate { CheckInfoInput(); });
         studentID.onValueChanged.AddListener(delegate { CheckInfoInput(); });
     }
     
     void CheckInfoInput()
     {
-        string name = nameInput.text;
         string id = studentID.text;
+        
         // 이름, 학번 입력 안하면 버튼 비활성화
-        bool nameValid = !string.IsNullOrEmpty(name);
-        bool idValid = Regex.IsMatch(id, @"^\d{8}$");
-
-        settingButton.interactable = nameValid && idValid;
+        settingButton.interactable = !string.IsNullOrEmpty(id);
     }
 
     void OnSettingClicked()
     {
-        string playerName = nameInput.text;
         string id = studentID.text;
 
-        if (string.IsNullOrEmpty(playerName) || !Regex.IsMatch(id, @"^\d{8}$"))
+        if (string.IsNullOrEmpty(id))
         {
-            Debug.Log("이름 또는 학번을 제대로 입력해주세요!");
+            Debug.Log("번호를 제대로 입력해주세요!");
             return;
         }
 
-        PlayerPrefs.SetString("PlayerName", playerName); // 이름 저장
         PlayerPrefs.SetString("StudentID", id);
         PlayerPrefs.SetInt("GameMode", 0);  // 0 = 실전
 
