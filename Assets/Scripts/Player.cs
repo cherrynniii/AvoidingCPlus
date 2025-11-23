@@ -34,17 +34,16 @@ public class Player : MonoBehaviour
         float centerErrorRate = centerDistance / maxDistance;
         centerErrorRate = Mathf.Clamp01(centerErrorRate);
 
-
-        GameManager.instance.RegisterCenterError(centerErrorRate);
-
         if (other.gameObject.tag == "A+") {
             GameManager.instance.IncreaseFinalScore(3);
             GameManager.instance.IncreaseGoodCollectedCount();
+            GameManager.instance.RegisterCenterError(centerErrorRate);
             Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "A0") {
             GameManager.instance.IncreaseFinalScore(1);
             GameManager.instance.IncreaseGoodCollectedCount();
+            GameManager.instance.RegisterCenterError(centerErrorRate);
             Debug.Log(GameManager.instance.GetFinalScore());
         }
         else if (other.gameObject.tag == "B+") {
@@ -62,7 +61,6 @@ public class Player : MonoBehaviour
             Debug.Log(GameManager.instance.GetFinalScore());
         }
 
-        GameManager.instance.TempFunction();
     }
 
     // 게임 종료 시 움직임 비활성화

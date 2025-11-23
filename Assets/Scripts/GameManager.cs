@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEditor.PackageManager;
 using UnityEngine.AI;
+using System.Globalization;
 
 public class GameManager : MonoBehaviour
 {
@@ -135,13 +136,6 @@ public class GameManager : MonoBehaviour
         return totalCenterError / errorSamples;
     }
 
-public void TempFunction()
-{
-    float avg = GetAverageCenterError();
-
-    // 퍼센트 변환(+ 100) + 소수점 1자리("F1")
-}
-
 
     // 재시작 처리
     public void PlayAgain() {
@@ -179,6 +173,7 @@ public void TempFunction()
         speed = PlayerPrefs.GetFloat("SpeedLevel");
         participantID = PlayerPrefs.GetString("StudentID");
         float avgError = GetAverageCenterError();
+        string avgErrorStr = avgError.ToString("F3", CultureInfo.InvariantCulture);
 
         string path = Application.persistentDataPath + "/experiment_log.csv";
 
@@ -198,7 +193,7 @@ public void TempFunction()
             goodCollectedCount + "," +
             badSpawnCount + "," +
             badCollectedCount + "," +
-            avgError + "\n";
+            avgErrorStr + "\n";
 
         System.IO.File.AppendAllText(path, line);
 
