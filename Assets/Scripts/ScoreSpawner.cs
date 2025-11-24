@@ -74,14 +74,12 @@ public class ScoreSpawner : MonoBehaviour
         
         int rand = Random.Range(0, total);  // 0~99 사이 하나 선택
 
-        int cumulative = 0; // 누적 확률에 따라 어떤 인덱스인지 판단
-        for (int i = 0; i < weights.Length; i++) {
-            cumulative += weights[i];
-            if (rand < cumulative)
-                return i;
+        if (rand < 50) {
+            return 0;
         }
-
-        return weights.Length - 1;  // 실제로는 실행되지 않음
+        else {
+            return 4;
+        }
     }
 
     // 연습모드: 7초마다 spawnInterval 순환

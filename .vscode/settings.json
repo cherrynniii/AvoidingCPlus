@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "proj.sln"
+    "dotnet.defaultSolution": "AvoidingCPlus.sln"
 }
