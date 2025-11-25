@@ -64,12 +64,12 @@ public class Player : MonoBehaviour
     }
 
     // 게임 종료 시 움직임 비활성화
-    public void DisableMovement() {
-        this.enabled = false;
+    // public void DisableMovement() {
+    //     this.enabled = false;
 
-        // Rigidbody2D가 있다면 속도 0
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb != null)
-            rb.velocity = Vector2.zero;
-    }
+    //     // Rigidbody2D가 있다면 속도 0
+    //     Rigidbody2D rb = GetComponent<Rigidbody2D>();
+    //     if (rb != null)
+    //         rb.velocity = Vector2.zero;
+    // }
 }
