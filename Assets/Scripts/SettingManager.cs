@@ -45,8 +45,8 @@ public class SettingManager : MonoBehaviour
         switch (level)
         {
             case 0: return 0.8f;
-            case 1: return 0.65f;
-            case 2: return 0.5f;
+            case 1: return 0.5f;
+            case 2: return 0.2f;
             default: return 0.8f;
         }
     }

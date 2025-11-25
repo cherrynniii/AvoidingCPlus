@@ -4,59 +4,62 @@ using UnityEngine;
 
 public class ScoreSpawner : MonoBehaviour
 {
-
     [SerializeField]
-    private GameObject[] scores; // A+, A0, B+, B0, C+ 객체
-    private float[] arrPosX = {-2.2f, -1.1f, 0f, 1.1f, 2.2f};   // 객체 생성 x 위치
-    private int[] weights = {15, 15, 10, 10, 50};    // score 생성 확률 테이블
-    
+    private GameObject[] scores; // A+, A0, B+, B0, C+
+
+    private float[] arrPosX = { -2.2f, -1.1f, 0f, 1.1f, 2.2f };
+
     private bool isPractice;
-     private float[] practiceIntervals = { 0.8f, 0.65f, 0.5f };
-     private int practiceIndex = 0;
+    private float[] practiceIntervals = { 0.8f, 0.65f, 0.5f };
+    private int practiceIndex = 0;
+    private float spawnInterval;
 
-    private float spawnInterval;  // 객체 생성 주기
+    // 🔥 셔플백 리스트 (A+ = 0, C+ = 4)
+    private List<int> bag = new List<int>();
+    public int pairCount = 2;
 
-    // Start is called before the first frame update
     void Start()
     {
+        // 셔플백 초기 생성
+        RefillAndShuffleBag();
+
         isPractice = GameManager.instance.GetIsPractice();
         if (!isPractice) {
             spawnInterval = PlayerPrefs.GetFloat("SpawnIntervalLevel");
         }
         else {
-            spawnInterval = practiceIntervals[0];   // 초기값 0.8f
+            spawnInterval = practiceIntervals[0];
             StartCoroutine(PracticeIntervalRoutine());
         }
-        
+
         StartScoreRoutine();
     }
 
-    // 오브젝트 사이즈 0.875로 수정 later
-
-    // coroutine
     void StartScoreRoutine() {
         StartCoroutine("ScoreRoutine");
     }
 
-    // 점수 무한 생성 로직
     IEnumerator ScoreRoutine() {
-        yield return new WaitForSeconds(1.5f);  // 시작 1.5초 뒤부터 생성
-        bool firstSpawn = true; // 첫 생성인지
+        yield return new WaitForSeconds(1.5f);
+        bool firstSpawn = true;
 
         while (true) {
+
             float posX = arrPosX[Random.Range(0, arrPosX.Length)];
-            int index = GetWeightedRandomIndex();     // score 객체 랜덤 뽑기
+
+            // ⬇️ 기존 랜덤 대신 "셔플백"에서 뽑기
+            int index = GetNextFromBag();
+
             SpawnScore(posX, index);
 
             if (firstSpawn) {
                 GameManager.instance.NotifyFirstSpawn();
                 firstSpawn = false;
             }
-            yield return new WaitForSeconds(spawnInterval); // 생성 주기에 따라 새로운 객체 생성
+            yield return new WaitForSeconds(spawnInterval);
         }
     }
 
-    // 스폰 x 위치, 어떤 score 객체 만들지 인덱스
     void SpawnScore(float posX, int index) {
         Vector3 spawnPos = new Vector3(posX, transform.position.y, transform.position.z);
         Instantiate(scores[index], spawnPos, Quaternion.identity);
@@ -66,23 +69,44 @@ public class ScoreSpawner : MonoBehaviour
         StopCoroutine("ScoreRoutine");
     }
 
-    // 확률 기반 랜덤 인덱스 함수
-    int GetWeightedRandomIndex() {
-        int total = 0;
-        foreach (int w in weights)
-            total += w; // 100
-        
-        int rand = Random.Range(0, total);  // 0~99 사이 하나 선택
+    // -----------------------------------------------------------
+    // 🔥 셔플백 방식 구현
+    // -----------------------------------------------------------
 
-        if (rand < 50) {
-            return 0;
+    // 주머니에서 하나 뽑기
+    int GetNextFromBag()
+    {
+        if (bag.Count == 0)
+            RefillAndShuffleBag();
+
+        int next = bag[0];
+        bag.RemoveAt(0);
+        return next;
+    }
+
+    // A+ & C+을 일정 수 넣고 섞기
+    void RefillAndShuffleBag()
+    {
+        bag.Clear();
+
+        for (int i = 0; i < pairCount; i++)
+        {
+            bag.Add(0); // A+
+            bag.Add(4); // C+
         }
-        else {
-            return 4;
+
+        // Fisher–Yates Shuffle
+        for (int i = bag.Count - 1; i > 0; i--)
+        {
+            int rand = Random.Range(0, i + 1);
+            int temp = bag[i];
+            bag[i] = bag[rand];
+            bag[rand] = temp;
         }
     }
 
-    // 연습모드: 7초마다 spawnInterval 순환
+    // -----------------------------------------------------------
+
     IEnumerator PracticeIntervalRoutine()
     {
         while (true)
