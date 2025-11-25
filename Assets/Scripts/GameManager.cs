@@ -81,9 +81,9 @@ public class GameManager : MonoBehaviour
             scoreSpawner.StopScoreRoutine();
         }
         Player player = FindObjectOfType<Player>();
-        if (player != null) {
-            player.DisableMovement();
-        }
+        // if (player != null) {
+        //     player.DisableMovement();
+        // }
         if (!isPractice) {
             SaveResult();
         }
@@ -106,8 +106,8 @@ public class GameManager : MonoBehaviour
     void Update() {
         if (!isPractice) {
             if (gameStarted) {
-                // 40초가 지난 경우 게임 종료
-                if (Time.time - gameStartTime >= 40f) {
+                // 30초가 지난 경우 게임 종료
+                if (Time.time - gameStartTime >= 30f) {
                     SetGameOver();
                     gameStarted = false;
                 }
